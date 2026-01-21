@@ -1,5 +1,8 @@
 name: Extract icons.zip to root
 
+permissions:
+  contents: write   # 🔥 PUSH PERMISSION FIX
+
 on:
   workflow_dispatch:
   push:
@@ -14,7 +17,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # 🔥 IMPORTANT
+          fetch-depth: 0
 
       - name: Check if icons.zip exists
         run: |
