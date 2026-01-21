@@ -1,0 +1,39 @@
+name: Extract icons.zip to root
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 🔥 IMPORTANT
+
+      - name: Check if icons.zip exists
+        run: |
+          if [ ! -f icons.zip ]; then
+            echo "icons.zip not found"
+            exit 0
+          fi
+
+      - name: Unzip icons.zip into root
+        run: |
+          unzip -o icons.zip
+
+      - name: Delete icons.zip
+        run: |
+          rm -f icons.zip
+
+      - name: Auto commit extracted files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Extract icons.zip to root and delete zip"
+          commit_user_name: github-actions
+          commit_user_email: github-actions@github.com
