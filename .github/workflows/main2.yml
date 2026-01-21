@@ -1,0 +1,45 @@
+name: Ultra Compress Icons
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Optional: remove junk files if any
+      - name: Cleanup unnecessary files
+        run: |
+          find . -name ".DS_Store" -delete || true
+          find . -name "__MACOSX" -type d -exec rm -rf {} + || true
+
+      - name: Ultra compress icons (max level)
+        run: |
+          zip -r -9 -X icons-ultra.zip . \
+            -x ".git/*" ".github/*" "icons-ultra.zip"
+
+      # Optional: delete original extracted files
+      # COMMENT this step if you want to keep files
+      - name: Remove original files after compression
+        run: |
+          find . -mindepth 1 \
+            ! -name "icons-ultra.zip" \
+            ! -path "./.git*" \
+            ! -path "./.github*" \
+            -exec rm -rf {} +
+
+      - name: Commit ultra compressed zip
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Ultra compressed icons to icons-ultra.zip"
+          commit_user_name: github-actions
+          commit_user_email: github-actions@github.com
